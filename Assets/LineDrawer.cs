@@ -36,7 +36,7 @@ public class LineDrawer : MonoBehaviour
     private void Start()
     {
         newPos = transform.position;
-        InvokeRepeating("SetPos", startDelay, changeCurveSpeed * 1.5f); // Change new position dot for constant movement
+        InvokeRepeating("SetPos", startDelay, 0.25f); // Change new position dot for constant movement
 
         speed = GameManager.Instance.LineSpeed;
     }
@@ -49,16 +49,11 @@ public class LineDrawer : MonoBehaviour
 
     void SetPos()
     {
-        newPos = new Vector2(transform.position.x + rightOffset, Random.Range(-curveSize, curveSize));
+        newPos = new Vector2(cam.position.x + rightOffset, Random.Range(-curveSize, curveSize));
     }
 
-    void MoveDot() {
-        transform.position = Vector2.Lerp(transform.position, newPos, changeCurveSpeed * Time.deltaTime);
-        transform.Translate(speed, 0, 0);
-    }
-
-
-    void HorizontalMovement()
+    void MoveDot()
     {
+        transform.position = Vector2.Lerp(transform.position, newPos, changeCurveSpeed * Time.deltaTime);
     }
 }

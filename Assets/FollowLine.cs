@@ -5,13 +5,27 @@ using UnityEngine;
 [RequireComponent(typeof(LineRenderer))] // does need a Line Renderer component to work
 public class FollowLine : MonoBehaviour
 {
+    public static FollowLine Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     public float pointSpacing;
 
     public int maxVertices;
 
     private float rightOffset;
 
-    List<Vector2> points;
+    [HideInInspector] public List<Vector2> points;
 
     LineRenderer line;
 

@@ -18,6 +18,7 @@ public class CameraMovement : MonoBehaviour
 
     void HorizontalMovement()
     {
-        transform.Translate(speed, 0, 0);
+        // Move the object upward in world space 1 unit/second.
+        transform.Translate(Vector3.right * speed * Time.deltaTime, Space.World);
     }
 }
