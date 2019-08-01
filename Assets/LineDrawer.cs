@@ -1,59 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LineDrawer : MonoBehaviour
 {
-    public static LineDrawer Instance { get; private set; }
+    public List<Vector2> points;
+    [SerializeField] private float pointSpacing;
 
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    public float startDelay;
-
-    public float changeCurveSpeed;
-
-    public float curveSize;
-    public float curveSizeIncreaseMultiplyer;
-
-    public float rightOffset;
-
-    private Vector2 newPos;
-
-    public Transform cam;
-
-    private float speed;
+    private LineRenderer line;
 
     private void Start()
     {
-        newPos = transform.position;
-        InvokeRepeating("SetPos", startDelay, 0.25f); // Change new position dot for constant movement
+        points = new List<Vector2>();
 
-        speed = GameManager.Instance.LineSpeed;
+        line = GetComponent<LineRenderer>();
     }
 
     private void Update()
     {
-        MoveDot();
-        //HorizontalMovement();
+        if(Vector3.Distance(points.Last(), transform.position) > pointSpacing)
+        {
+            SetPoint();
+        }
     }
 
-    void SetPos()
+    void SetPoint()
     {
-        newPos = new Vector2(cam.position.x + rightOffset, Random.Range(-curveSize, curveSize));
-    }
+        points.Add(transform.position);
 
-    void MoveDot()
-    {
-        transform.position = Vector2.Lerp(transform.position, newPos, changeCurveSpeed * Time.deltaTime);
+        line.positionCount = points.Count;
+        line.SetPosition(points.Count - 1, transform.position);
     }
 }

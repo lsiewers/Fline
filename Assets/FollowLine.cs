@@ -1,73 +1,40 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
-[RequireComponent(typeof(LineRenderer))] // does need a Line Renderer component to work
+[RequireComponent(typeof(EdgeCollider2D))]
+[RequireComponent(typeof(LineRenderer))]
 public class FollowLine : MonoBehaviour
 {
-    public static FollowLine Instance { get; private set; }
+    private float[] lineVertices;
 
-    private void Awake()
+    private float speed;
+    private float curveSize;
+
+    private void Start()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
+        speed = GameManager.Instance.LineSpeed;
+        curveSize = GameManager.Instance.CurveSize;
+
+        InvokeRepeating("UpdateLine", 0, speed * 10f);
+        System.Array.Resize(ref lineVertices, transform.childCount);
+    }
+
+    private void FixedUpdate()
+    {
+        speed = GameManager.Instance.LineSpeed;
+
+        for (var i = 0; i < lineVertices.Length; i++)
+        {   
+            transform.GetChild(i).position = Vector2.MoveTowards(transform.GetChild(i).position, new Vector2(transform.GetChild(i).position.x, lineVertices[i]), speed * Time.deltaTime);
         }
     }
 
-    public float pointSpacing;
-
-    public int maxVertices;
-
-    private float rightOffset;
-
-    [HideInInspector] public List<Vector2> points;
-
-    LineRenderer line;
-
-    Vector2 newPosition;
-
-    // Start is called before the first frame update
-    void Start()
+    private void UpdateLine()
     {
-        line = GetComponent<LineRenderer>();
-
-        points = new List<Vector2>(); // instantiate list
-
-        newPosition = LineDrawer.Instance.transform.position;
-
-        rightOffset = LineDrawer.Instance.rightOffset;
-
-        SetPoint();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        newPosition = LineDrawer.Instance.transform.position;
-
-        if (Vector2.Distance(points.Last(), newPosition) > pointSpacing)
-            SetPoint();
-    }
-
-    void SetPoint()
-    {
-        points.Add(newPosition); // new vector point each frame
-
-        if (points.Count > maxVertices)
+        for (var i = 0; i < (transform.childCount - 1); i++)
         {
-            points.Remove(points[0]); // remove points for optimization
-            for(int i = 0; i < maxVertices - 1; i++)
-            {
-                line.SetPosition(i, line.GetPosition(i + 1)); // set all previous vertices to the next so the line will stay the same
-            }
+            lineVertices[transform.childCount - i - 1] = lineVertices[transform.childCount - i - 2];
         }
 
-        line.positionCount = points.Count; // line position count must be equal to list count
-        line.SetPosition(points.Count - 1, newPosition); // set position of new point
+        lineVertices[0] = Random.Range(-curveSize, curveSize);
     }
 }
