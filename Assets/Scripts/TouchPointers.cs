@@ -11,13 +11,12 @@ public class TouchPointers : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //var log = "";
 
-        var log = "";
-
-        for (var index = 0; index < activeTouches.Count; index++)
-        {
-            log += activeTouches[index].ToString();
-        }
+        //for (var index = 0; index < activeTouches.Count; index++)
+        //{
+        //    log += activeTouches[index].ToString();
+        //}
         //GameManager.Instance.logText.GetComponent<TextMeshProUGUI>().SetText(log + " " + Input.touchCount);
 
         SetPointers();
@@ -68,6 +67,7 @@ public class TouchPointers : MonoBehaviour
 
     void PositionPointers()
     {
+        // position each pointer to finger position, based on index
         for(var i = 0; i < activeTouches.Count; i++)
         {
             transform.GetChild(i).position = Camera.main.ScreenToWorldPoint(new Vector3(Input.GetTouch(i).position.x, Input.GetTouch(i).position.y, 10));

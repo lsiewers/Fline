@@ -9,7 +9,7 @@ public class StartMenu : MonoBehaviour
 
     private void Start()
     {
-        highscore = PlayerPrefs.GetInt("highscore");
+        highscore = PlayerPrefs.GetInt("highscore"); // get saved highscore
         highscoreText.GetComponent<TextMeshProUGUI>().SetText(highscore.ToString());
     }
 

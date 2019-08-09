@@ -106,14 +106,16 @@ public class GameManager : MonoBehaviour
         gameOverScreen.transform.Find("Score").GetComponent<TextMeshProUGUI>().SetText(points.ToString()); // set final score
         AudioManager.Instance.Play("Game Over");
 
+        // if highscore
         if (points > PlayerPrefs.GetInt("highscore"))
         {
             AudioManager.Instance.Play("Highscore");
-            gameOverScreen.transform.Find("New highscore").gameObject.SetActive(true);
-            PlayerPrefs.SetInt("highscore", (int)points);
+            gameOverScreen.transform.Find("New highscore").gameObject.SetActive(true); // show highscore text
+            PlayerPrefs.SetInt("highscore", (int)points); // save highscore on device
         }
     }
 
+    // button functions
     public void Retry()
     {
         AudioManager.Instance.Play("Click");

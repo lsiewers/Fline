@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 public class Pointer : MonoBehaviour
@@ -13,14 +11,24 @@ public class Pointer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        OnActive();
+    }
+
+    private void OnActive()
+    {
+        // if both axis and line collision with pointer
         if (activeAxis != null && activeLine != null)
         {
+            // and if both of the same player, then this player is active and line can be dragged to the right
             if (activeAxis.GetComponentInParent<Player>().id == activeLine.GetComponentInParent<Player>().id)
             {
                 activeAxis.GetComponentInParent<Player>().activated = true;
+
+                // set positive feedback color
                 activeLine.endColor = new Color(0, 255, 155);
                 activeAxis.GetComponent<LineRenderer>().startColor = new Color(0, 255, 155);
 
+                // if axis left position is higher than pointer left, then move axis following the pointer
                 if (activeAxis.transform.position.x < transform.position.x)
                 {
                     AudioManager.Instance.Play("Rise");

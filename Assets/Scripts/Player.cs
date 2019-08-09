@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 
 public class Player : MonoBehaviour
@@ -40,13 +38,13 @@ public class Player : MonoBehaviour
         {
             //GameManager.Instance.logText.GetComponent<TextMeshProUGUI>().SetText(axisSpeed.ToString() + lineSpeed.ToString());
             axis.GetComponent<LineRenderer>().startColor = color;
-            axis.position = Vector2.MoveTowards(new Vector2(axis.position.x, axis.position.y), new Vector2(-7.5f, axis.position.y), lineSpeed * Time.deltaTime * axisSpeed);
+            axis.position = Vector2.MoveTowards(new Vector2(axis.position.x, axis.position.y), new Vector2(-7.5f, axis.position.y), lineSpeed * Time.deltaTime * axisSpeed); // move y-axis to left
 
             // if player is out of range (game over)
             if (axis.localPosition.x <= 0 && isActive)
             {
                 isActive = false;
-                GameManager.Instance.PlayerCount -= 1;
+                GameManager.Instance.PlayerCount -= 1; // Remove one player. If PlayerCount == 0, game ends
             }
         }
     }

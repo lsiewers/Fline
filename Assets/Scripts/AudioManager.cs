@@ -31,6 +31,7 @@ public class AudioManager : MonoBehaviour
         Play("Theme");
     }
 
+    // add audio source with settings for each audio clip
     private void AddSources()
     {
         foreach(Audio clip in clips)
@@ -42,6 +43,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    // play/stop based on given clip name in inspector
     public void Play(string name)
     {
         Audio sound = Array.Find(clips, s => s.name == name);
