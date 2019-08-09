@@ -1,7 +1,7 @@
 # Fline
 Follow the line! *An Android game made with Unity.*
 
-![header](https://github.com/lsiewers/Fline/promo.jpg)
+![header](https://github.com/lsiewers/Fline/blob/master/promo.jpg)
 
 Fline is a **Mobile game**, where you follow the line with your finger. Slowly the line moves from the right to the left while the shape of the line changes and you may **never get the line to the left side**. Get new highscores and beat friends while playing on the same phone. Inspired by the wire loop game and endless runner apps like Flappy bird. *Also based on challenge and submission following the MDA framework*.
 
