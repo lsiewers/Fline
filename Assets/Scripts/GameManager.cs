@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,14 +26,13 @@ public class GameManager : MonoBehaviour
     public GameObject scoreText;
     public GameObject levelText;
     public GameObject countdownText;
-    public GameObject finalScoreText;
+    public GameObject gameOverScreen;
     public GameObject backgroundParticles;
+    //public GameObject logText;
 
 
     [Header("Settings")]
-    public int PlayerAmount = 1;
-
-    public Color ColorGreen;
+    public int PlayerCount;
 
     [Header("Game balancing")]
     public float LineSpeed;
@@ -45,21 +45,17 @@ public class GameManager : MonoBehaviour
     // not inspector
     private float level;
 
-    private float startTime;
+    [HideInInspector] public float startTime;
     private float lifeTime;
 
     private float points;
 
     [HideInInspector] public bool gameStarted;
+    [HideInInspector] public int activePlayers;
 
-    // start
     private void Start()
     {
         Input.multiTouchEnabled = true;
-
-        startTime = Time.time;
-
-        SetColors();
     }
 
     // update
@@ -70,20 +66,21 @@ public class GameManager : MonoBehaviour
             SetPoints();
             SetLevel();
         }
-    }
 
-    private void SetColors()
-    {
-        scoreText.GetComponent<TextMeshProUGUI>().color = ColorGreen;
-        countdownText.GetComponent<TextMeshProUGUI>().color = ColorGreen;
-        finalScoreText.GetComponent<TextMeshProUGUI>().color = ColorGreen;
+        // PlayerCount is equal to active players. If 0 than all players are game over.
+        if (PlayerCount <= 0)
+        {
+            GameOver();
+        }
+
+        //logText.GetComponent<TextMeshProUGUI>().SetText(PlayerCount.ToString());
     }
 
     private void SetPoints()
     {
-        lifeTime = Time.time - startTime;
-        points = Mathf.Floor(lifeTime * pointsMultiplier);
-        scoreText.GetComponent<TextMeshProUGUI>().SetText(points.ToString());
+        lifeTime = Time.time - startTime; // points based on time, Time.time to make it start on 0
+        points = Mathf.Floor(lifeTime * pointsMultiplier); // no decimals and to make points feel more valuable times a multiplier
+        scoreText.GetComponent<TextMeshProUGUI>().SetText(points.ToString()); // set points in text as feedback
     }
 
     private void SetLevel()
@@ -92,12 +89,40 @@ public class GameManager : MonoBehaviour
 
         if (level < pointsToLevel)
         {
-            LineSpeed += 0.05f;
+            LineSpeed += 0.05f; // increase speed on higher level
             level = pointsToLevel;
-            levelText.GetComponent<TextMeshProUGUI>().SetText(level.ToString());
-            backgroundParticles.GetComponent<ParticleSystem>().startSize -= 0.1f;
 
-            backgroundParticles.GetComponent<ParticleSystem>().startSpeed += 0.2f;
+            levelText.GetComponent<TextMeshProUGUI>().SetText(level.ToString()); // set new level on background text
+            backgroundParticles.GetComponent<ParticleSystem>().startSize -= 0.2f; // smaller particles, because they grow on speed and speed increases
+
+            backgroundParticles.GetComponent<ParticleSystem>().startSpeed += 0.2f; // on speed increase game, increase particle speed
         }
+    }
+
+    public void GameOver()
+    {
+        gameStarted = false; // stop the game
+        gameOverScreen.SetActive(true); // make game over screen appear
+        gameOverScreen.transform.Find("Score").GetComponent<TextMeshProUGUI>().SetText(points.ToString()); // set final score
+        AudioManager.Instance.Play("Game Over");
+
+        if (points > PlayerPrefs.GetInt("highscore"))
+        {
+            AudioManager.Instance.Play("Highscore");
+            gameOverScreen.transform.Find("New highscore").gameObject.SetActive(true);
+            PlayerPrefs.SetInt("highscore", (int)points);
+        }
+    }
+
+    public void Retry()
+    {
+        AudioManager.Instance.Play("Click");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void Back()
+    {
+        AudioManager.Instance.Play("Click");
+        SceneManager.LoadScene("Menu");
     }
 }

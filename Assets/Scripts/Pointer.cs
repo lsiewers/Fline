@@ -18,10 +18,12 @@ public class Pointer : MonoBehaviour
             if (activeAxis.GetComponentInParent<Player>().id == activeLine.GetComponentInParent<Player>().id)
             {
                 activeAxis.GetComponentInParent<Player>().activated = true;
-                activeLine.endColor = GameManager.Instance.ColorGreen;
+                activeLine.endColor = new Color(0, 255, 155);
+                activeAxis.GetComponent<LineRenderer>().startColor = new Color(0, 255, 155);
 
                 if (activeAxis.transform.position.x < transform.position.x)
                 {
+                    AudioManager.Instance.Play("Rise");
                     activeAxis.transform.position = new Vector3(transform.position.x, 0, 10);
                 }
             }
@@ -55,11 +57,13 @@ public class Pointer : MonoBehaviour
         {
             activeAxis = null;
             Deactivate(collision.transform.parent.GetComponent<Player>());
+            if (AudioManager.Instance.IsPlaying("Rise")) { AudioManager.Instance.Stop("Rise"); }
         }
         if (collision.gameObject.name == "Line")
         {
             activeLine = null;
             Deactivate(collision.transform.parent.GetComponent<Player>());
+            if (AudioManager.Instance.IsPlaying("Rise")) { AudioManager.Instance.Stop("Rise"); }
         }
     }
 }

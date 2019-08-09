@@ -5,10 +5,15 @@ using TMPro;
 
 public class Player : MonoBehaviour
 {
+    // inspector
     public Color color;
+    public int id;
+
+    // not inspector
+    private bool isActive = true;
+
     private Transform axis;
     private FollowLine line;
-    public int id;
 
     [HideInInspector] public bool activated;
 
@@ -23,11 +28,7 @@ public class Player : MonoBehaviour
         axisSpeed = GameManager.Instance.AxisSpeed;
         lineSpeed = GameManager.Instance.LineSpeed;
 
-        axis.GetComponent<LineRenderer>().startColor = color;
-        line.GetComponent<LineRenderer>().startColor = color;
-
-        axis.GetComponent<LineRenderer>().endColor = color;
-        line.GetComponent<LineRenderer>().endColor = color;
+        SetColors();
     }
 
     // Update is called once per frame
@@ -39,13 +40,23 @@ public class Player : MonoBehaviour
         {
             //GameManager.Instance.logText.GetComponent<TextMeshProUGUI>().SetText(axisSpeed.ToString() + lineSpeed.ToString());
             axis.GetComponent<LineRenderer>().startColor = color;
-            axis.position = Vector2.MoveTowards(new Vector2(axis.position.x, axis.position.y), new Vector2(-7.2f, axis.position.y), lineSpeed * Time.deltaTime * axisSpeed);
+            axis.position = Vector2.MoveTowards(new Vector2(axis.position.x, axis.position.y), new Vector2(-7.5f, axis.position.y), lineSpeed * Time.deltaTime * axisSpeed);
 
-            if(axis.position.x <= 7.2f)
+            // if player is out of range (game over)
+            if (axis.localPosition.x <= 0 && isActive)
             {
-                // game over!
-                GameOver.GameOverMethod();
+                isActive = false;
+                GameManager.Instance.PlayerCount -= 1;
             }
         }
+    }
+
+    private void SetColors()
+    {
+        axis.GetComponent<LineRenderer>().startColor = color;
+        line.GetComponent<LineRenderer>().startColor = color;
+
+        axis.GetComponent<LineRenderer>().endColor = color;
+        line.GetComponent<LineRenderer>().endColor = color;
     }
 }

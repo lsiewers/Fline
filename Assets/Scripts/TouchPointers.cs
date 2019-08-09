@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class TouchPointers : MonoBehaviour
 {
@@ -12,17 +11,18 @@ public class TouchPointers : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SetPointers();
-        RemovePointers();
-        PositionPointers();
 
         var log = "";
 
-        for(var index = 0; index < activeTouches.Count; index++)
+        for (var index = 0; index < activeTouches.Count; index++)
         {
             log += activeTouches[index].ToString();
         }
-        //GameManager.Instance.logText.GetComponent<TextMeshProUGUI>().SetText(log);
+        //GameManager.Instance.logText.GetComponent<TextMeshProUGUI>().SetText(log + " " + Input.touchCount);
+
+        SetPointers();
+        RemovePointers();
+        PositionPointers();
         //transform.GetChild(0).position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));  
     }
 
@@ -31,7 +31,7 @@ public class TouchPointers : MonoBehaviour
         GameObject thisPointer;
 
         // if there are more touches than pointers
-        if (gameObject.transform.childCount < Input.touchCount && Input.touchCount <= GameManager.Instance.PlayerAmount)
+        if (transform.childCount < Input.touchCount && Input.touchCount <= GameManager.Instance.PlayerCount)
         {
             thisPointer = Instantiate(pointer);
             thisPointer.transform.parent = transform;
